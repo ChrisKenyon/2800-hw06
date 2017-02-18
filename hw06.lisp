@@ -106,7 +106,9 @@ this format.
 ;; For example (m1 n1) (m1 n2)....(m2 n1)(m2 n2)....
 ;; This function shouldn't require recursion.
 (defunc comb-len2 (m n)
-   ............
+  :input-contract (and (listp m)(listp n))
+  :output-contract (natp (comb-len2 m n))
+   (* (len m) (len n)))
 
 (defdata lor (listof rational))
 
@@ -120,7 +122,8 @@ this format.
   :output-contract (rationalp (sum rl))
   (if (endp rl)
      0
-     (+ (first rl) (sum (rest rl)))))
+     (+ (first rl) (sum (rest rl)))))#|ACL2s-ToDo-Line|#
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DEFINE
@@ -132,7 +135,9 @@ this format.
 ;; Quizzes are worth 1% each so a mark of 18/24 would be given as 3/4.
 ;; You simply need to sum the three lists.
 (defunc calc-grade (e q a)
-  ............
+  :input-contract (and (lorp e)(lorp q)(lorp a))
+  :output-contract (rationalp (calc-grade e q a))
+  (sum (app e q a)))
 
 (check= (calc-grade '(24 26) 
                     '(1 1 1 1 1 1 1/2 1/2 1/2 1/2 1/2 1/2 3/4 3/4 3/4 3/4 3/4 3/4 3/4 3/4)
