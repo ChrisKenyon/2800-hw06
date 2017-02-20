@@ -1,61 +1,3 @@
-; **************** BEGIN INITIALIZATION FOR ACL2s B MODE ****************** ;
-; (Nothing to see here!  Your actual file is after this initialization code);
-
-#|
-Pete Manolios
-Fri Jan 27 09:39:00 EST 2012
-----------------------------
-
-Made changes for spring 2012.
-
-
-Pete Manolios
-Thu Jan 27 18:53:33 EST 2011
-----------------------------
-
-The Beginner level is the next level after Bare Bones level.
-
-|#
-
-; Put CCG book first in order, since it seems this results in faster loading of this mode.
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading the CCG book.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
-(include-book "ccg/ccg" :uncertified-okp nil :dir :acl2s-modes :ttags ((:ccg)) :load-compiled-file nil);v4.0 change
-
-;Common base theory for all modes.
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading ACL2s base theory book.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
-(include-book "base-theory" :dir :acl2s-modes)
-
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading ACL2s customizations book.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
-(include-book "custom" :dir :acl2s-modes :uncertified-okp nil :ttags :all)
-
-;Settings common to all ACL2s modes
-(acl2s-common-settings)
-
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading trace-star and evalable-ld-printing books.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
-(include-book "trace-star" :uncertified-okp nil :dir :acl2s-modes :ttags ((:acl2s-interaction)) :load-compiled-file nil)
-(include-book "hacking/evalable-ld-printing" :uncertified-okp nil :dir :system :ttags ((:evalable-ld-printing)) :load-compiled-file nil)
-
-;theory for beginner mode
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading ACL2s beginner theory book.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
-(include-book "beginner-theory" :dir :acl2s-modes :ttags :all)
-
-
-#+acl2s-startup (er-progn (assign fmt-error-msg "Problem setting up ACL2s Beginner mode.") (value :invisible))
-;Settings specific to ACL2s Beginner mode.
-(acl2s-beginner-settings)
-
-; why why why why 
-(acl2::xdoc acl2s::defunc) ; almost 3 seconds
-
-(cw "~@0Beginner mode loaded.~%~@1"
-    #+acl2s-startup "${NoMoReSnIp}$~%" #-acl2s-startup ""
-    #+acl2s-startup "${SnIpMeHeRe}$~%" #-acl2s-startup "")
-
-
-(acl2::in-package "ACL2S B")
-
-; ***************** END INITIALIZATION FOR ACL2s B MODE ******************* ;
-;$ACL2s-SMode$;Beginner
 #|
 CS 2800 Homework 6 - Spring 2017
 
@@ -141,8 +83,7 @@ this format.
 (check= (calc-grade '(24 26) 
                     '(1 1 1 1 1 1 1/2 1/2 1/2 1/2 1/2 1/2 3/4 3/4 3/4 3/4 3/4 3/4 3/4 3/4)
                     '(2 2 2 1 1 1 3/2 3/2 3/2 3/2)) 
-        (+ (+ 50 15) 15))#|ACL2s-ToDo-Line|#
- 
+        (+ (+ 50 15) 15)) 
 
 #|
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -598,6 +539,7 @@ Rewrite the conjecture and then prove the various parts.
                                 (implies (and (losp (rest l1))(losp l2))
                                          (no-dupesp (merge (rest l1) l2))))))
                   (no-dupesp (merge l1 l2))))
+
  
   Think about breaking this conjecture into 3 cases.
   
@@ -609,9 +551,92 @@ Rewrite the conjecture and then prove the various parts.
   You won't be able to use Phi_in_merge in this format, but what is
   it equivalent to?  What if you know something about (in2 s l1) and 
   (in2 s l2) ?
+ 
+  
+  ..................
+  
+  Simplification through propositional logic:
+  A = (endp l1), B = (in2 (first l1) l2), C = (implies (and (losp (rest l1))(losp l2))
+                                                       (no-dupesp (merge (rest l1) l2)))
+  A \/ (~A /\ B /\ C) \/ (~A /\ ~B /\ C)
+  A \/ ((~A /\ C) /\ (B \/ ~B))
+  A \/ (~A /\ C)
+  A \/ C
+  Results in:
+  
+ (implies (and (losp l1)(losp l2))
+         (implies (and (no-dupesp l1)(no-dupesp l2)
+                       (or (endp l1)                 
+                           (implies (and (losp (rest l1))(losp l2))
+                                    (no-dupesp (merge (rest l1) l2))))))
+                  (no-dupesp (merge l1 l2))))
+  
+                                  
+  Part 1:
+  C1. (losp l1)
+  C2. (losp l2)
+  C3. (no-dupesp l1)
+  C4. (no-dupesp l2)
+  C5. (endp l1)
+  -------
+  
+  (no-dupesp (merge l1 l2))
+  = {def. merge, C5}
+  (no-dupesp l2)
+  = {C4}
+  t
+  
+  
+  Part 2 (B):
+  C1. (losp l1)
+  C2. (losp l2)
+  C3. (no-dupesp l1)
+  C4. (no-dupesp l2)
+  C5. (not (endp l1))
+  C6. (in2 (first l1) l2)
+  C7. ((losp (rest l1)) /\ (losp l2)) => (no-dupesp (merge (rest l1) l2))
+  -------
+  C8. (losp (rest l1)) {C1, C5}
+  C9. (no-dupesp (merge (rest l1) l2)) {C8, C2, C7, MP}
+  
+  (no-dupesp (merge l1 l2))
+  = {def. merge, C5, C6}
+  (no-dupesp (merge (rest l1) l2))
+  = {C9}
+  t
+  
+  
+  Part 3 (~B):
+  C1. (losp l1)
+  C2. (losp l2)
+  C3. (no-dupesp l1)
+  C4. (no-dupesp l2)
+  C5. (not (endp l1))
+  C6. (not (in2 (first l1) l2))
+  C7. ((losp (rest l1)) /\ (losp l2)) => (no-dupesp (merge (rest l1) l2))
+  -------
+  C8. (losp (rest l1)) {C1, C5}
+  C9. (no-dupesp (merge (rest l1) l2)) {C8, C2, C7, MP}
+  
+  C10. (no-dupesp (rest l1)) {def. no-dupesp, C8, C6, C5}
+  C11. (not (in2 (first l)) (rest l)) {def. no-dupesp, C10, C5}
+  C12. (not (in2 (first l1) (merge (rest l1) l2))) {phi_in_merge|((s (first l1))(l1 (rest l1))(l2 l2)), C11, C6, MT} 
+    (note on this one so I remember... We take phi_in_merge and prove that (in2 s l1) and (in2 s l2) are both 
+    false, then modus tollens that to say that (in2 s (merge l1 l2)) is also false, substituting as done above)
+    TODO: do I need to add symbol check for contract checking?
+  
+  (no-dupesp (merge l1 l2))
+  = {def. merge, C5, C6}
+  (no-dupesp (cons (first l1) (merge (rest l1) l2)))
+  = {def. no-dupesp|((l (cons (first l1) (merge (rest l1) l2)))), C5, def. cons, C11}
+  (no-dupes (merge (rest l1) l2))
+  = {C9}
+  t
+  
+  Q.E.D.
   
   ................
-  
+ 
    
   b) OK.  So you're pretty sure get-vars has no duplicate variables now
   but you turned off contract checking for get-vars.
