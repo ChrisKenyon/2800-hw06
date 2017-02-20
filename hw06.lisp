@@ -391,6 +391,26 @@ you are using.
 
   ..................
 
+  contract completion: lorps for input of sum
+  (listp x)/\(listp l)/\(lorp (app2 x l))/\(lorp (app2 l x)) => (sum (app2 x l)) = (sum (app2 l x))
+  
+  C1. (listp x)
+  C2. (listp l)
+  C3. (lorp (app2 x l))
+  C4. (lorp (app2 l x))
+  ---------------------
+  C5. (lorp x) {C3/C4,"For your conjecture contract checking, you can assume ... that appending two lors results in a lor"} TODO... I don't know how else to get this
+  C6. (lorp l) {C3/C4,"For your conjecture contract checking, you can assume ... that appending two lors results in a lor"}
+  
+  (sum (app2 x l))
+  = {Phi_sum_app|((l1 x)(l2 l))
+  (+ (sum x) (sum l))
+  = {arithmetic}
+  (+ (sum l) (sum x))
+  = {Phi_sum_app|((l1 l)(l2 x))
+  (sum (app2 l x))
+  Q.E.D.
+  
 |#
 
 #|
