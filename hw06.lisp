@@ -617,9 +617,9 @@ Rewrite the conjecture and then prove the various parts.
   -------
   C8. (losp (rest l1)) {C1, C5}
   C9. (no-dupesp (merge (rest l1) l2)) {C8, C2, C7, MP}
-  
-  C10. (no-dupesp (rest l1)) {def. no-dupesp, C8, C6, C5}
-  C11. (not (in2 (first l)) (rest l)) {def. no-dupesp, C10, C5}
+
+  C10. (no-dupesp (rest l1)) {def. no-dupesp, C8, C3, C5}
+  C11. (not (in2 (first l1)) (rest l1)) {def. no-dupesp, C10, C5}
   C12. (not (in2 (first l1) (merge (rest l1) l2))) {phi_in_merge|((s (first l1))(l1 (rest l1))(l2 l2)), C11, C6, MT} 
     (note on this one so I remember... We take phi_in_merge and prove that (in2 s l1) and (in2 s l2) are both 
     false, then modus tollens that to say that (in2 s (merge l1 l2)) is also false, substituting as done above)
