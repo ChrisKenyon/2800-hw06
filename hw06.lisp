@@ -476,6 +476,52 @@ Rewrite the conjecture and then prove the various parts.
 
 ................
 
+((markp m1)/\(markp m2)/\(markp m3)) => (hasWinner m1 m2 m3) = (hasWinner2 m1 m2 m3)
+Re-write hasWinner as logical expression. (If p nil else q) is equivalent to (~p or q)
+((markp m1)/\(markp m2)/\(markp m3)) => ~((m1 = '-)\/(m2 = '-)\/(m3 = '-))/\(m1 = m2)/\(m1 = m3) =
+                                        ((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x))\/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o))
+if A = B, then (A=>B)/\(B=>A)
+((markp m1)/\(markp m2)/\(markp m3)) => (~((m1 = '-)\/(m2 = '-)\/(m3 = '-))/\(m1 = m2)/\(m1 = m3) =>
+                                        ((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x))\/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o))) /\
+                                        (((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x))\/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o)) =>
+                                        ~((m1 = '-)\/(m2 = '-)\/(m3 = '-))/\(m1 = m2)/\(m1 = m3))
+Part 1:
+C1. (markp m1)
+C2. (markp m2)
+C3. (markp m3)
+C4. ~((m1 = '-)\/(m2 = '-)\/(m3 = '-))/\(m1 = m2)/\(m1 = m3)
+-------------
+C5. (or (equal m1 'x)(equal m1 'o)(equal m1 '-)) {C1, Phi_markDef}
+C6. (or (equal m2 'x)(equal m2 'o)(equal m2 '-)) {C2, Phi_markDef}
+C7. (or (equal m3 'x)(equal m3 'o)(equal m3 '-)) {C3, Phi_markDef}
+C8. (m1 = 'x) \/ (m1 = 'o) {C5, C4}
+C9. (m2 = 'x) \/ (m2 = 'o) {C6, C4}
+C10. (m3 = 'x) \/ (m3 = 'o) {C7, C4}
+C11. ((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x)) \/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o)) {C4, C8, C9, C10, prop.logic}
+
+((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x)) \/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o)) 
+{C11}
+t
+
+Part 2:
+C1. (markp m1)
+C2. (markp m2)
+C3. (markp m3)
+C4. ((m1 = 'x)/\(m2 = 'x)/\(m3 = 'x))\/ ((m1 = 'o)/\(m2 = 'o)/\(m3 = 'o))
+-------------
+C5. (or (equal m1 'x)(equal m1 'o)(equal m1 '-)) {C1, Phi_markDef}
+C6. (or (equal m2 'x)(equal m2 'o)(equal m2 '-)) {C2, Phi_markDef}
+C7. (or (equal m3 'x)(equal m3 'o)(equal m3 '-)) {C3, Phi_markDef}
+
+~((m1 = '-)\/(m2 = '-)\/(m3 = '-))/\(m1 = m2)/\(m1 = m3)
+= {C4}
+(~(('x = '-)\/('x = '-)\/('x = '-))/\('x = 'x)/\('x = 'x)) \/
+(~(('o = '-)\/('o = '-)\/('o = '-))/\('o = 'o)/\('o = 'o))
+={prop.logic}
+t
+
+Q.E.D.
+
 |#
 
 #|
@@ -635,9 +681,6 @@ Rewrite the conjecture and then prove the various parts.
   
   Q.E.D.
   
-  ................
- 
-   
   b) OK.  So you're pretty sure get-vars has no duplicate variables now
   but you turned off contract checking for get-vars.
   
