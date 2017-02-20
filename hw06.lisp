@@ -336,8 +336,10 @@ C7. (comb-len (rest m) n) = (len2 (rest m)) * (len2 n) {C4, C6, MP}
 (len2 n) + [(len2 (rest m)) * (len2 n)]
 = {arithmetic}
 [(len2 (rest m)) + 1] * (len2 n)
-= {Def. len2|((m x)), C3}
+= {Def. len2|((x m)), C3}
 (len2 m) * (len2 n)
+
+QED
  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -371,17 +373,56 @@ Thus we can split our proof obligations into two parts.
 1) Write each conjecture you need to prove. Use exportation to make
 your proof easier.
 
-.............
+conjecture 1:
+(implies (and (lorp x) (lorp l))
+         (implies (endp x)
+                  (equal (sum (app2 x l)) (+ (sum x) (sum l))))
+                  
+BY EXPORTATION, this simplifies to:
+
+(implies (and (lorp x) (lorp l) (endp x))
+         (equal (sum (app2 x l)) (+ (sum x) (sum l))))
+                  
+conjecture 2:
+(implies (and (lorp x) (lorp l) 
+              (rationalp a)
+              (equal (sum (app2 x l)) (+ (sum x) (sum l))))
+         (equal (sum (app2 (cons a x) l)) (+ (sum (cons a x)) (sum l))))
+         
+Exportation is similarly used here to extract the (rationalp a) and (equal (sum ...) ...)
+terms into the conditional included in the first implies
+
 
 2) Prove conjecture 1
 
-.............
-  
+(lorp x) /\ (lorp l) /\ (endp x) => [(sum (app2 x l)) = (sum x) + (sum l)]
+
+c1: (lorp x)
+c2: (lorp l)
+c3: (endp x)
+-------------
+
+(sum (app2 x l))
+= {def. app2| ((y l)), c3, if-axioms}
+(sum l) //I know that (endp x), so I know (sum x) = 0. (sum l) + 0 = (sum l) but how do I formalize that?
+= {def. sum|((rl x)), c3, arithmetic (anything plus 0 is itself)}
+(sum l) + (sum x)
+QED
+
   
 3) Prove conjecture 2 (the not endp case). When using the definition
 of app2 and sum, show the substitutions you are using.
 
-..............
+(lorp x) /\ (lorp l) /\ (rationalp a) /\ [(sum (app2 x l)) = (sum x) + (sum l)] => [(sum (app2 (cons a x) l)) = (sum (cons a x) + (sum l))]
+
+c1: (lorp x)
+c2: (lorp l)
+c3: (rationalp a)
+c4: (sum (app2 x l)) = (sum x) + (sum l)
+----------------
+
+(sum (app2 (cons a x) l))
+= {def. app2|((
   
 As we will see in class soon, the above conjecture, which is now a theorem,
 and your proof in homework 5 gives rise (via what is known as "induction") 
