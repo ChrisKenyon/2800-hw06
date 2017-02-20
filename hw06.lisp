@@ -322,19 +322,23 @@ to handle implications in your proof.
 C1. (listp m)
 C2. (listp n)
 C3. (not (endp m))
-C4: (listp (rest m)) => (comb-len (rest m) n) = (len2 (rest m)) * (len2 n)
+C4: (listp (rest m)) => [(comb-len (rest m) n) = (len2 (rest m)) * (len2 n)]
 C5: {(listp m) /\ (listp n) /\ (not (endp m)) /\ [(listp (rest m)) => (comb-len (rest m) n) = (len2 (rest m)) * (len2 n)]} => (comb-len m n) = (len2 m) * (len2 n)
 ------------------------
 C6. (listp (rest m)) {C1, C3, def. listp}
 C7. (comb-len (rest m) n) = (len2 (rest m)) * (len2 n) {C4, C6, MP}
 
 
-(comb-len m n) 
-
- .............
- desired end (* (len2 m)(len2 n))
-
-
+(comb-len m n)
+= {def comb-len, C3, if-axioms}
+(+ (len2 n) (comb-len (rest m) n)))
+= {C7}
+(len2 n) + [(len2 (rest m)) * (len2 n)]
+= {arithmetic}
+[(len2 (rest m)) + 1] * (len2 n)
+= {Def. len2|((m x)), C3}
+(len2 m) * (len2 n)
+ 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 2. Your partner's implementation of calc-grade is the following:
