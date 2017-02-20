@@ -122,8 +122,7 @@ this format.
   :output-contract (rationalp (sum rl))
   (if (endp rl)
      0
-     (+ (first rl) (sum (rest rl)))))#|ACL2s-ToDo-Line|#
-
+     (+ (first rl) (sum (rest rl)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DEFINE
@@ -142,7 +141,8 @@ this format.
 (check= (calc-grade '(24 26) 
                     '(1 1 1 1 1 1 1/2 1/2 1/2 1/2 1/2 1/2 3/4 3/4 3/4 3/4 3/4 3/4 3/4 3/4)
                     '(2 2 2 1 1 1 3/2 3/2 3/2 3/2)) 
-        (+ (+ 50 15) 15)) 
+        (+ (+ 50 15) 15))#|ACL2s-ToDo-Line|#
+ 
 
 #|
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -322,13 +322,11 @@ to handle implications in your proof.
 C1. (listp m)
 C2. (listp n)
 C3. (not (endp m))
-C4. (implies (listp (rest m))
-             (equal (comb-len (rest m) n) 
-                    (* (len2 (rest m))(len2 n))))
+C4: (listp (rest m)) => (comb-len (rest m) n) = (len2 (rest m)) * (len2 n)
+C5: {(listp m) /\ (listp n) /\ (not (endp m)) /\ [(listp (rest m)) => (comb-len (rest m) n) = (len2 (rest m)) * (len2 n)]} => (comb-len m n) = (len2 m) * (len2 n)
 ------------------------
-C5. (listp (rest m)) {C1, C3, def. listp}
-C6. (equal (comb-len (rest m) n) 
-           (* (len2 (rest m))(len2 n)))) {C5, C4, MP}
+C6. (listp (rest m)) {C1, C3, def. listp}
+C7. (comb-len (rest m) n) = (len2 (rest m)) * (len2 n) {C4, C6, MP}
 
 
 (comb-len m n) 
