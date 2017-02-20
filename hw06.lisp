@@ -137,7 +137,7 @@ this format.
 (defunc calc-grade (e q a)
   :input-contract (and (lorp e)(lorp q)(lorp a))
   :output-contract (rationalp (calc-grade e q a))
-  (sum (app e q a)))
+  (+ (sum e) (+ (sum q)(sum a))))
 
 (check= (calc-grade '(24 26) 
                     '(1 1 1 1 1 1 1/2 1/2 1/2 1/2 1/2 1/2 3/4 3/4 3/4 3/4 3/4 3/4 3/4 3/4)
@@ -317,7 +317,25 @@ solution for comb-len2 is equivalent to your partner's.
 Notice the nested implies? Refer to the course notes for how
 to handle implications in your proof.
 
-................
+(A/\(B=>C))=>D
+
+C1. (listp m)
+C2. (listp n)
+C3. (not (endp m))
+C4. (implies (listp (rest m))
+             (equal (comb-len (rest m) n) 
+                    (* (len2 (rest m))(len2 n))))
+------------------------
+C5. (listp (rest m)) {C1, C3, def. listp}
+C6. (equal (comb-len (rest m) n) 
+           (* (len2 (rest m))(len2 n)))) {C5, C4, MP}
+
+
+(comb-len m n) 
+
+ .............
+ desired end (* (len2 m)(len2 n))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
