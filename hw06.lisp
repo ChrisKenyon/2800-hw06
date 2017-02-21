@@ -363,7 +363,15 @@ c4: (sum (app2 x l)) = (sum x) + (sum l)
 ----------------
 
 (sum (app2 (cons a x) l))
-= {def. app2|((
+= {def. app2|((x (cons a x)) (y l)), cons-axioms, if-axioms}
+(sum (cons a (app2 x l)))
+= {def. sum|((rl (cons a (app2 x l)))), cons-axioms, if-axioms}
+a + (sum (app2 x l))
+={C4}
+a + (sum x) + (sum l)
+={def. sum|((rl (cons a x))), associative prop., first-rest axioms, C3}
+(sum (cons a x)) + (sum l)
+QED
   
 As we will see in class soon, the above conjecture, which is now a theorem,
 and your proof in homework 5 gives rise (via what is known as "induction") 
