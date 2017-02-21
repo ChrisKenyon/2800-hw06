@@ -403,11 +403,11 @@ you are using.
   C6. (lorp l) {C3/C4,"For your conjecture contract checking, you can assume ... that appending two lors results in a lor"}
   
   (sum (app2 x l))
-  = {Phi_sum_app|((l1 x)(l2 l))
+  = {C5,C6,MP,Phi_sum_app|((l1 x)(l2 l))
   (+ (sum x) (sum l))
   = {arithmetic}
   (+ (sum l) (sum x))
-  = {Phi_sum_app|((l1 l)(l2 x))
+  = {C5,C6,MP,Phi_sum_app|((l1 l)(l2 x))
   (sum (app2 l x))
   Q.E.D.
   
@@ -619,8 +619,7 @@ Q.E.D.
   (in2 s l2) ?
  
   
-  ..................
-  
+    
   Simplification through propositional logic:
   A = (endp l1), B = (in2 (first l1) l2), C = (implies (and (losp (rest l1))(losp l2))
                                                        (no-dupesp (merge (rest l1) l2)))
@@ -638,7 +637,7 @@ Q.E.D.
                   (no-dupesp (merge l1 l2))))
   
                                   
-  Part 1:
+  Part 1 (A):
   C1. (losp l1)
   C2. (losp l2)
   C3. (no-dupesp l1)
@@ -724,8 +723,67 @@ Q.E.D.
   Phi_PX_3: (implies (and (listp px)(equal (len2 px) 3)(PropExp (third px)))
                      (losp (get-vars (third px))))
                      
- ............
+ Part 1:
+ (booleanp px) => (losp (get-vars px))
  
+ C1. (booleanp px)
+ ---------
+ (losp (get-vars px)
+ = {C1, def. get-vars, cond}
+ (losp nil)
+ ={def. losp}
+ T
+ 
+ 
+ Part 2:
+ (symbolp px)/\~(booleanp px)
+ 
+ C1. (symbolp px)
+ C2. ~(booleanp px)
+ ---------
+ (losp (get-vars px))
+ ={C1, def. get-vars, cond}
+ (losp (listp x))
+ ={C1, listp axioms}
+ (losp nil)
+ ={losp axioms}
+ t
+ 
+ Part 3:
+ (listp px)/\(equal (len2 px) 2)/\(UnaryOpp (first px))
+ /\(PropExp (second px)) => (losp (get-vars px))
+ 
+ C1. (listp px)
+ C2. (equal (len2 px) 2)
+ C3. (UnaryOpp (first px))
+ C4. (PropExp (second px))
+ -------
+ C5. (losp (get-vars (second px))) {C1,C2,C4, Phi_PX_2, MP}
+ 
+ (losp (get-vars px))
+ = {Def. get-vars}
+ (losp (get-vars (second px)))
+ = {C5}
+ t
+ 
+ Part 4:
+ (listp px)(equal (len2 px) 3)(BinOpp (second px))
+   (PropExp (first px))  => (losp (get-vars px))
+ 
+ C1. (listp px)
+ C2. (equal (len2 px) 3)
+ C3. (BinOpp (second px))
+ C4. (PropExp (first px))
+ -------
+ C5. (losp (get-vars (first px))) {C1,C2,C4, Phi_PX_1, MP}
+ 
+ (losp (get-vars px))
+ = {def. get-vars}
+ (losp (merge (get-vars (third px))
+              (get-vars (first px))))
+ = {output contract. merge}
+ T
+   
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
