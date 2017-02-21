@@ -275,8 +275,8 @@ C7. (comb-len (rest m) n) = (len2 (rest m)) * (len2 n) {C4, C6, MP}
 (+ (len2 n) (comb-len (rest m) n)))
 = {C7}
 (len2 n) + [(len2 (rest m)) * (len2 n)]
-= {arithmetic}
-[(len2 (rest m)) + 1] * (len2 n)
+= {associative}
+[(len2 (rest m)) + 1] * (len2 n)]
 = {Def. len2|((x m)), C3}
 (len2 m) * (len2 n)
 
