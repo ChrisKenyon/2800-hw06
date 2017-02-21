@@ -397,9 +397,9 @@ a theorem for you to prove:
 prove the conjecture is valid. If you use Phi_sum_app, given the substitution
 you are using.
 
-  ..................
-
-  contract completion: lorps for input of sum
+  contract completion: lorps for input of sum -- (and (lorp (app2 x l)) (lorp (app2 l x)))
+  
+  gives us:
   (listp x)/\(listp l)/\(lorp (app2 x l))/\(lorp (app2 l x)) => (sum (app2 x l)) = (sum (app2 l x))
   
   C1. (listp x)
@@ -407,11 +407,11 @@ you are using.
   C3. (lorp (app2 x l))
   C4. (lorp (app2 l x))
   ---------------------
-  C5. (lorp x) {C3/C4,"For your conjecture contract checking, you can assume ... that appending two lors results in a lor"} TODO... I don't know how else to get this
-  C6. (lorp l) {C3/C4,"For your conjecture contract checking, you can assume ... that appending two lors results in a lor"}
+  C5. (lorp x) {C3/C4, lorp-axioms}
+  C6. (lorp l) {C3/C4, lorp-axioms}
   
   (sum (app2 x l))
-  = {C5,C6,MP,Phi_sum_app|((l1 x)(l2 l))
+  = {C5,C6,MP,Phi_sum_app|((l1 x)(l2 l))}
   (+ (sum x) (sum l))
   = {arithmetic}
   (+ (sum l) (sum x))
@@ -451,7 +451,13 @@ conjecture (in the test?) or provide a counterexample.
 (test? (implies (and (lorp lr)(not (endp lr)))
                 (posp (- (max lr)(min lr)))))
                 
-  ................
+Counterexample: let lr = '(1)
+
+(lorp lr) is true
+(not (endp lr)) is true
+
+HOWEVER, the implication stated here, that (max lr) - (min lr) will be positive
+(or, that (max lr) > (min lr), really), is shown to be false, as 1-1 = 0 !> 0
 
 
 b) Prove the following conjecture
@@ -461,7 +467,38 @@ b) Prove the following conjecture
                             (<= (min lr) (max lr))))
          (posp (- (max (cons m lr))(min (cons m lr)))))
 
-  ......................
+The last line here just says that the first term is greater than the second term,
+so for the sake of my sanity I am changing the conjecture to read the following
+obviously logically equivalent conjecture:
+
+(implies (and (lorp lr)(not (endp lr))
+              (rationalp m)(< m (min lr))
+              (implies (and (lorp lr)(not (endp lr)))
+                            (<= (min lr) (max lr))))
+         (> (max (cons m lr)) (min (cons m lr))))
+         
+c1: (lorp lr)
+c2: (not (endp lr))
+c3: (rationalp m)
+c4: (< m (min lr))
+c5: (and (lorp lr) (not (endp lr))) => (<= (min lr) (max lr))
+--------------------
+c6: (<= (min lr) (max lr)) {c1, c2, c5, MP}
+
+(> (max (cons m lr)) (min (cons m lr)))
+= {c4, def. min|((lr (cons m lr))), cons-axioms, if-axioms}
+(> (max (cons m lr)) m)
+= {def max|((lr (cons m lr))), cons-axioms}
+(> (if (> m (max lr))
+        m
+        (max lr))
+    m)
+= {c4, c6, PL, arithmetic}
+(> (max lr) m)
+= {c4, c6, PL}
+T
+QED
+
 
 |#
 
